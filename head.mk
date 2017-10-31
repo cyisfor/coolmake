@@ -90,7 +90,6 @@ clean:
 	@echo ^C to not delete
 	@read
 	git clean -fdx
-	(cd data_to_header_string; exec ninja -t clean)
 
 o:
 	mkdir o

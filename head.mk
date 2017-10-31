@@ -101,7 +101,7 @@ o:
 # thanks to Tom Tromney I guess for this trick (whoever he is)
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
-o/%.o: %.c o/%.d | o
+o/%.lo: %.c o/%.d | o
 	$(COMPILE)
 
 o/%.d: | o ;

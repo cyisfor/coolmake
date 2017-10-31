@@ -14,9 +14,12 @@ TOP:=$(wordlist 1,$(num),dummyprefixthing $(MAKEFILE_LIST))
 TOP:=$(dir $(lastword $(TOP)))
 endif
 
+O:=$(TOP)o
 
-$(TOP)o:
-	mkdir $@
+define PROGRAM
+$(OUT): $(OBJECTS)
+	$(LINK)
+endef
 
 
 # generate objects, and also update .d files
@@ -24,7 +27,10 @@ $(TOP)o:
 # thanks to Tom Tromney I guess for this trick (whoever he is)
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
-$(TOP)o/%.lo: %.c %(TOP)o/%.d | $(TOP)o
+define OBJECT
+$(O)$(N).lo: $(N).c $(O)$(N).d | $(O)
 	$(COMPILE)
+endef
 
-$(TOP)o/%.d: ;
+$(TOP)o:
+	mkdir $@

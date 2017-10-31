@@ -12,11 +12,13 @@ CFLAGS+=-fdiagnostics-color=auto
 CFLAGS+=$(patsubst %,-I%,$(INC))
 #INC:=otherinclude
 
+O:=o # switch to $(TOP)o later
+
 # switch all names for object names, and add those names to the list of module names compiled
 # since this is lazy, $N will be different if we assign it, then access $(O)
 #every link depends on ALLN
 #ALLN=common ferrets note
-O=$(patsubst %,o/%.lo,$N $(ALLN)) \
+OBJECTS=$(patsubst %,$(O)/%.lo,$N $(ALLN)) \
 $(eval mods:=$$(mods) $(N))
 
 # libtool needs to be told to be quiet

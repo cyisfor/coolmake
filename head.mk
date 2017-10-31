@@ -31,15 +31,20 @@ S:=
 endif
 LIBTOOL+=--mode=
 
+COLOR.reset=$'\x1b[0m'
+COLOR.yellow=$'\x1b[01;35m'
+COLOR.blue=$'\x1b[01;34m'
+COLOR.green=$'\x1b[01;37m'
+
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
-	@echo LINK $(or $*, $(notdir $@))
+	@echo $(COLOR.yellow) Link $(COLOR.green) $(or $*, $(notdir $@)) $(COLOR.reset)
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
-	@echo COMPILE $*
+	@echo $(COLOR.yellow) Compile $(COLOR.green) $* $(COLOR.reset) 
 	$(S)$(LIBTOOL)compile $(CC) -MF o/$*.d -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 

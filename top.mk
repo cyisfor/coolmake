@@ -17,11 +17,12 @@ endif
 
 O:=$(TOP)o
 
-%:
+define PROGRAM
+$(TOP)$(OUT): $(OBJECTS)
+
+$(TOP)$(OUT): $(TOP)%:
 	$(LINK)
 
-define PROGRAM
-$(OUT): $(OBJECTS)
 endef
 
 

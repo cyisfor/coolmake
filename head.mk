@@ -106,36 +106,4 @@ clean:
 	@read
 	git clean -fdx
 
-o:
-	mkdir o
-
-
-# generate objects, and also update .d files
-# this is a really sneaky trick, so I'll explain
-# thanks to Tom Tromney I guess for this trick (whoever he is)
-# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
-
-o/%.lo: %.c o/%.d | o
-	$(COMPILE)
-
-o/%.d: ;
-
 .PHONY: all clean
-
-# let us figure out where we actually are, for output purposes
-
-ifeq ($(words $(MAKEFILE_LIST)),2)
-# top level, since it'll also have coolmake/head.mk in it, so 2
-else
-# coolmake/head.mk is the lastword, so we need the SECOND to last word...
-# so be sneaky, and prepend a value, then wordlist by the original length, to get a
-# list with the second value at the end.
-$(warning $(MAKEFILE_LIST))
-num:=$(words $(MAKEFILE_LIST))
-TOP:=$(wordlist 1,$(num),dummyprefixthing $(MAKEFILE_LIST))
-TOP:=$(lastword $(TOP))
-
-$(error $(TOP))
-
-
-endif

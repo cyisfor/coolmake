@@ -12,6 +12,7 @@ else
 num:=$(words $(MAKEFILE_LIST))
 TOP:=$(wordlist 1,$(num),dummyprefixthing $(MAKEFILE_LIST))
 TOP:=$(dir $(lastword $(TOP)))
+VPATH+=$(TOP)
 endif
 
 O:=$(TOP)o
@@ -28,9 +29,9 @@ endef
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
 define OBJECT
-$(O)$(N).lo: $(N).c $(O)$(N).d | $(O)
+$(O)/$(OUT).lo: $(N).c $(O)/$(OUT).d | $(O)
 	$(COMPILE)
 endef
 
-$(TOP)o:
+$(O):
 	mkdir $@

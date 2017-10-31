@@ -124,9 +124,19 @@ o/%.d: ;
 
 # let us figure out where we actually are, for output purposes
 
-ifeq ($(count $(MAKEFILE_LIST)),1)
-# top level
+ifeq ($(count $(MAKEFILE_LIST)),2)
+# top level, since it'll also have coolmake/head.mk in it, so 2
 else
-TOP:=$(dir $(lastword $(MAKEFILE_LIST)))
+$(error $(count $(MAKEFILE_LIST)))
+# coolmake/head.mk is the lastword, so we need the SECOND to last word...
+# so be sneaky, and prepend a value, then wordlist by the original length, to get a
+# list with the second value at the end.
+$(warning $(MAKEFILE_LIST))
+num:=$(words $(MAKEFILE_LIST))
+TOP:=$(wordlist 1,$(num),dummyprefixthing $(MAKEFILE_LIST))
+TOP:=$(lastword $(TOP))
+
 $(error $(TOP))
+
+
 endif

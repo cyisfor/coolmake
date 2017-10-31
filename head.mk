@@ -33,14 +33,14 @@ LIBTOOL+=--mode=
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
-
+# note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
 	@echo LINK $*
-	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(S)$(LIBTOOL)link $(CC) -MM $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
 	@echo COMPILE $*
-	$(S)$(LIBTOOL)compile $(CC) $(CFLAGS) -c -o $@ $<
+	$(S)$(LIBTOOL)compile -MF o/$*.d -MT $@ -MMD $(CFLAGS) $(CC) $(CFLAGS) -c -o $@ $<
 endef
 
 # example:

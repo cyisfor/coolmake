@@ -124,10 +124,9 @@ o/%.d: ;
 
 # let us figure out where we actually are, for output purposes
 
-ifeq ($(count $(MAKEFILE_LIST)),2)
+ifeq ($(words $(MAKEFILE_LIST)),2)
 # top level, since it'll also have coolmake/head.mk in it, so 2
 else
-$(error $(count $(MAKEFILE_LIST)))
 # coolmake/head.mk is the lastword, so we need the SECOND to last word...
 # so be sneaky, and prepend a value, then wordlist by the original length, to get a
 # list with the second value at the end.

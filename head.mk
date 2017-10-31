@@ -103,6 +103,6 @@ o:
 o/%.lo: %.c o/%.d | o
 	$(COMPILE)
 
-o/%.d: | o ;
+o/%.d: ;
 
 .PHONY: all clean

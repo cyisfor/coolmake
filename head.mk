@@ -35,7 +35,7 @@ LIBTOOL+=--mode=
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
-	@echo LINK $(or $*, $@)
+	@echo LINK $(or $*, $(notdir $@))
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =

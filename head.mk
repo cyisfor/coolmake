@@ -64,6 +64,7 @@ endef
 
 
 define AUTOMAKE_SUBPROJECT_SCRIPT =
+VPATH+=$1
 $1/$2.la: $1/Makefile
 	$$(MAKE) -C $1 $2.la
 
@@ -75,7 +76,7 @@ $1/configure: $1/configure.ac
 endef
 
 # call this with the location, and the library name (libxml2, libxml2) etc
-AUTOMAKE_SUBPROJECT=$(eval $(call $(AUTOMAKE_SUBPROJECT_SCRIPT), $1, $2))
+AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT, $1, $2))
 
 data_to_header_string/pack: | data_to_header_string
 	cd data_to_header_string && ninja
@@ -120,3 +121,12 @@ o/%.lo: %.c o/%.d | o
 o/%.d: ;
 
 .PHONY: all clean
+
+# let us figure out where we actually are, for output purposes
+
+ifeq ($(count $(MAKEFILE_LIST)),1)
+# top level
+else
+TOP:=$(dir $(lastword $(MAKEFILE_LIST)))
+$(error $(TOP))
+endif

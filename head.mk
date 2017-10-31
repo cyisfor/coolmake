@@ -31,10 +31,10 @@ S:=
 endif
 LIBTOOL+=--mode=
 
-COLOR.reset=$'\x1b[0m'
-COLOR.yellow=$'\x1b[01;35m'
-COLOR.blue=$'\x1b[01;34m'
-COLOR.green=$'\x1b[01;37m'
+COLOR.reset:=$$'\x1b[0m'
+COLOR.yellow:=$$'\x1b[01;35m'
+COLOR.blue:=$$'\x1b[01;34m'
+COLOR.green:=$$'\x1b[01;37m'
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)

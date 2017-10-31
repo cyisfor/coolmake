@@ -39,7 +39,7 @@ define LINK =
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
-	@echo COMPILE $*
+	@echo COMPILE $$*
 	$(S)$(LIBTOOL)compile $(CC) -MF o/$*.d -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 

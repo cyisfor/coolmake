@@ -1,5 +1,4 @@
 all: # have stuff depend on this to be built
-	@echo DONE
 
 VPATH+=src
 
@@ -32,9 +31,13 @@ endif
 LIBTOOL+=--mode=
 
 COLOR.reset:=$$'\x1b[0m'
-COLOR.yellow:=$$'\x1b[01;35m'
+COLOR.pink:=$$'\x1b[01;35m'
+COLOR.yellow:=$$'\x1b[01;33m'
 COLOR.blue:=$$'\x1b[01;34m'
 COLOR.green:=$$'\x1b[01;37m'
+
+all:
+	@echo $(COLOR.yellow) DONE
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)

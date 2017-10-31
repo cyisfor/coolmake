@@ -55,13 +55,13 @@ define LINK =
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
-	$(call STATUS,Compile,$(or $*, $(notdir $@)))
-	$(S)$(LIBTOOL)compile $(CC) -MF o/$*.d -MT $@ -MMD $(CFLAGS) -c -o $@ $<
+	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
+	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 
 # example:
 # N=main module
-# main: $(O)
+# main: $(OBJECTS)
 # 	$(LINK)
 
 

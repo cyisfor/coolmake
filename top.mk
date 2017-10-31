@@ -17,9 +17,11 @@ endif
 
 O:=$(TOP)o
 
+%:
+	$(LINK)
+
 define PROGRAM
 $(OUT): $(OBJECTS)
-	$(LINK)
 endef
 
 
@@ -28,9 +30,12 @@ endef
 # thanks to Tom Tromney I guess for this trick (whoever he is)
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
-define OBJECT
-$(O)/$(OUT).lo: $(N).c $(O)/$(OUT).d | $(O)
+$(O)/%.lo: %.c $(O)/%.d | $(O)
 	$(COMPILE)
+$(O)/%.d: ;
+
+define OBJECT
+$(O)/$(OUT).lo: $(N).c
 endef
 
 $(O):

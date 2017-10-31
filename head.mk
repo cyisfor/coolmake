@@ -1,7 +1,7 @@
 all: # have stuff depend on this to be built
 	@echo DONE
 
-VPATH=src
+VPATH+=src
 
 # lazy evaluation, so we can't use ifeq()
 CFLAGS+=$(if $(P),$(shell pkg-config --cflags $(P)))
@@ -36,7 +36,7 @@ LIBTOOL+=--mode=
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
 	@echo LINK $*
-	$(S)$(LIBTOOL)link $(CC) -MM $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
 	@echo COMPILE $*

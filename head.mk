@@ -43,18 +43,17 @@ COLOR.white:=$$'\x1b[01;37m'
 all:
 	@echo $(COLOR.green)DONE
 
-STATUS:=@echo $(COLOR.white)$$1 $(COLOR.yellow)$$2$(COLOR.reset)
-$(error $(STATUS))
+STATUS=@echo $(COLOR.white)$1 $(COLOR.yellow)$2$(COLOR.reset)
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
-	$(call $(STATUS),Link,$(or $*, $(notdir $@)))
+	$(call STATUS,Link,$(or $*, $(notdir $@)))
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
 define COMPILE =
-	$(call $(STATUS),Compile,$(or $*, $(notdir $@)))
+	$(call STATUS,Compile,$(or $*, $(notdir $@)))
 	$(S)$(LIBTOOL)compile $(CC) -MF o/$*.d -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 

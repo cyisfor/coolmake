@@ -80,6 +80,30 @@ endef
 # call this with the location, and the library name (libxml2, libxml2) etc
 AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT, $1, $2))
 
+define REQUIRE_VAR =
+ifeq ($$$1,)
+$$(error provide $1)
+endif
+endef
+
+define CLONEPULL =
+$(call REQUIRE_VAR, dest)
+
+if $(and $(
+ifeq ($(guile (stat:type (stat $(local)))),'directory')
+	adjremote:=1
+else ifdef remote
+q
+endif
+else # ifndef local
+ifndef remote
+$(error must define local or remote at least)
+endif
+$(dest)
+undefine adjremote
+undefine dest local remote 
+
+
 data_to_header_string/pack: | data_to_header_string
 	cd data_to_header_string && ninja
 
@@ -109,3 +133,4 @@ clean:
 	git clean -fdx
 
 .PHONY: all clean
+

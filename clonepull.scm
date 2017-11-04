@@ -51,6 +51,3 @@
 							(system "git remote set-url local" local))
 						(chdir ".."))
 					(check-system (string-join " " "git clone  --recursive" remote dest)))))
-
-		
-

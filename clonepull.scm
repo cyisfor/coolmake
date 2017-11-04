@@ -9,25 +9,6 @@
 			nil
 			(gmk-expand (string-append "$(" (symbol->string var) " )"))))
 
-(define (defined val) (not (eq? val nil)))
-
-(define dest (from-make 'dest))
-
-(when (eq? dest nil)
-	(error "need to define a destination directory"))
-
-(define local (from-make 'local))
-(define remote (from-make 'remote))
-
-(when (not (or (defined local) (defined remote)))
-	(error "Need to define local or remote"))
-
-(define (dir? path)
-	(eq? 'directory (stat:type (stat path))))
-
-(define clone-from-local (and (defined local) (dir? local)))
-
-(define check (from-make 'check))
 
 (define (nocheck-system . cmd)
 	(system (string-join " " cmd)))
@@ -39,6 +20,26 @@
 			(error (string-append "command failed: " cmd)))))
 
 (define (clonepull)
+	(define (defined val) (not (eq? val nil)))
+
+	(define dest (from-make 'dest))
+
+	(when (eq? dest nil)
+		(error "need to define a destination directory"))
+
+	(define local (from-make 'local))
+	(define remote (from-make 'remote))
+
+	(when (not (or (defined local) (defined remote)))
+		(error "Need to define local or remote"))
+
+	(define (dir? path)
+		(eq? 'directory (stat:type (stat path))))
+
+	(define clone-from-local (and (defined local) (dir? local)))
+
+	(define check (from-make 'check))
+
 	(if (dir? dest)
 			;; maybe pull
 			(when (defined check)

@@ -33,7 +33,7 @@ endif
 LIBTOOL+=--mode=
 
 all:
-	@echo DONE "(ignore any errors, they're because you can't restart make.)"
+	@$(call STATUS,DONE)
 
 $(guile (load "coolmake/status.scm"))
 STATUS=$(guile (status "$1" "$2"))
@@ -49,7 +49,7 @@ endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
 	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $< \
-	|| (rm -f $(O)/*.d; $(MAKE); exit 1)
+	|| (rm -f $(O)/*.d; exit 1)
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))

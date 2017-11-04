@@ -1,3 +1,6 @@
+# make a main.mk
+# make a Makefile that includes coolmake/main.mk
+# go
 include coolmake/head.mk
 include main.mk
 include coolmake/tail.mk
@@ -7,4 +10,4 @@ git-tools/funcs.sh: | git-tools
 
 git-tools:
 	git submodule add -b master https://github.com/cyisfor/git-tools
-	git commit -a -m 'git-tools submodule'
+	cd git-tools && git commit -a -m 'git-tools submodule'

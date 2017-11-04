@@ -1,0 +1,6 @@
+# you can't symlink to this, because coolmake may not have been cloned yet!
+
+include coolmake/main.mk
+
+coolmake/main.mk:
+	git clone https://github.com/cyisfor/coolmake coolmake

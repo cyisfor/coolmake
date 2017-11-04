@@ -31,9 +31,10 @@ endef
 # thanks to Tom Tromney I guess for this trick (whoever he is)
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
-$(O)/%.lo: %.c $(O)/%.d | $(O)
+$(O)/%.lo: %.c | $(O)/%.d $(O)
 	$(COMPILE)
-$(O)/%.d: ;
+$(O)/%.d: $(O)/%.c
+	$(COMPILEDEP)
 
 define OBJECT
 $(O)/$(OUT).lo: $(N).c

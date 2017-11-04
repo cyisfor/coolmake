@@ -86,23 +86,8 @@ $$(error provide $1)
 endif
 endef
 
-define CLONEPULL =
-$(call REQUIRE_VAR, dest)
-
-if $(and $(
-ifeq ($(guile (stat:type (stat $(local)))),'directory')
-	adjremote:=1
-else ifdef remote
-q
-endif
-else # ifndef local
-ifndef remote
-$(error must define local or remote at least)
-endif
-$(dest)
-undefine adjremote
-undefine dest local remote 
-
+$(guile (load "coolmake/clonepull.scm"))
+CLONEPULL=$(guile (clonepull))
 
 data_to_header_string/pack: | data_to_header_string
 	cd data_to_header_string && ninja

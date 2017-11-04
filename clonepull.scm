@@ -19,6 +19,8 @@
 		(when (not (= result 0))
 			(error (string-append "command failed: " cmd)))))
 
+(define (defined val) (not (eq? val nil)))
+
 (define (clonepull)
 	(define (defined val) (not (eq? val nil)))
 
@@ -27,12 +29,17 @@
 	(when (eq? dest nil)
 		(error "need to define a destination directory"))
 
+	(clonepull2 dest))
+
+(define (clonepull2 dest)
 	(define local (from-make 'local))
 	(define remote (from-make 'remote))
 
 	(when (not (or (defined local) (defined remote)))
 		(error "Need to define local or remote"))
+	(clonepull3 dest local remote))
 
+(define (clonepull3 dest local remote)
 	(define (dir? path)
 		(eq? 'directory (stat:type (stat path))))
 

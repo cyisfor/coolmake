@@ -1,6 +1,3 @@
-# make a main.mk
-# make a Makefile that includes coolmake/main.mk
-# go
 include coolmake/head.mk
 include main.mk
 include coolmake/tail.mk

@@ -2,6 +2,8 @@
 	(string->symbol
 	 (gmk-expand (string-append "$(flavor " (symbol->string var) ")"))))
 
+(define nil '())
+
 (define (from-make var)
 	(if (eq? (flavor var) 'undefined)
 			nil
@@ -27,8 +29,12 @@
 
 (define check (from-make 'check))
 
-(define (check-system cmd)
-	(let ((result (system cmd)))
+(define (nocheck-system . cmd)
+	(system (string-join " " cmd)))
+
+(define (check-system . cmd)
+	(let* ((cmd (string-join " " cmd))
+				 (result (system cmd)))
 		(when (not (= result 0))
 			(error (string-append "command failed: " cmd)))))
 
@@ -43,11 +49,11 @@
 			;; need clone
 			(if clone-from-local
 					(begin
-						(check-system (string-join " " "git clone  --recursive" local dest))
+						(check-system "git clone  --recursive" local dest)
 						(chdir dest)
 						(when remote
-							(system "git remote set-url origin" remote))
+							(nocheck-system "git remote set-url origin" remote))
 						(when local
-							(system "git remote set-url local" local))
+							(nocheck-system "git remote set-url local" local))
 						(chdir ".."))
-					(check-system (string-join " " "git clone  --recursive" remote dest)))))
+					(check-system "git clone  --recursive" remote dest))))

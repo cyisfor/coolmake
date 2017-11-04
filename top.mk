@@ -24,20 +24,19 @@ $(TOP)$(OUT): $(TOP)%:
 $(LINK)
 endef
 
-# generate objects, and also update .d files
-# this is a really sneaky trick, so I'll explain
-# thanks to Tom Tromney I guess for this trick (whoever he is)
-# http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
-
 $(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)
 	$(COMPILE)
 
 $(O)/%.d: $(TOP)src/%.c | $(O)
 	$(COMPILEDEP)
+	$(eval LASTDEP?=$@)
+
+REDEPENDENCY=echo eh
 
 define OBJECT
 $(O)/$(OUT).lo: $(N).c
 endef
 
 $(O):
-	mkdir $@
+	$(call STATUS,Directory,$@)
+	$(S)mkdir $@

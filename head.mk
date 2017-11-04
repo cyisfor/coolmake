@@ -33,7 +33,7 @@ endif
 LIBTOOL+=--mode=
 
 all:
-	@echo DONE
+	@echo DONE "(ignore any errors, they're because you can't restart make.)"
 
 $(guile (load "coolmake/status.scm"))
 STATUS=$(guile (status "$1" "$2"))
@@ -48,7 +48,8 @@ define LINK =
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $<
+	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $< \
+	|| (rm -f $(O)/*.d; $(MAKE); exit 1)
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
@@ -90,7 +91,8 @@ data_to_header_string/pack: | data_to_header_string
 
 define PACK =
 o/$(dir $F): | o
-	mkdir $$@
+	$$(call STATUS,Directory,$$@)
+	$$(S)mkdir $$@
 
 o/$F.pack.c: $F data_to_header_string/pack | o o/$(dir $F)
 	@echo PACK $F $N

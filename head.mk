@@ -32,25 +32,17 @@ S:=
 endif
 LIBTOOL+=--mode=
 
-COLOR.reset:=$$'\x1b[0m'
-COLOR.grey:=$$'\x1b[01;30m'
-COLOR.red:=$$'\x1b[01;31m'
-COLOR.green:=$$'\x1b[01;32m'
-COLOR.yellow:=$$'\x1b[01;33m'
-COLOR.blue:=$$'\x1b[01;34m'
-COLOR.pink:=$$'\x1b[01;35m'
-COLOR.cyan:=$$'\x1b[01;36m'
-COLOR.white:=$$'\x1b[01;37m'
-
 all:
 	@echo $(COLOR.green)DONE
 
-STATUS=@echo $(COLOR.white)$1 $(COLOR.yellow)$2$(COLOR.reset)
+$(guile (load "coolmake/status.scm"))
+STATUS=$(guile (status $1 $2))
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
+	$(warning $(call STATUS,Link,hmm $(or $*, $(notdir $@))))
 	$(call STATUS,Link,$(or $*, $(notdir $@)))
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef
@@ -60,7 +52,7 @@ define COMPILE =
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MM -MG $(CFLAGS) -c -o $@ $<
+	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM -MG $(CFLAGS) -c $<
 endef
 
 # example:

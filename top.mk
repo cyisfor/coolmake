@@ -33,7 +33,7 @@ endef
 
 $(O)/%.lo: %.c | $(O)/%.d $(O)
 	$(COMPILE)
-$(O)/%.d: $(O)/%.c
+$(O)/%.d: %.c | $(O)
 	$(COMPILEDEP)
 
 define OBJECT

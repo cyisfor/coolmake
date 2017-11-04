@@ -43,8 +43,8 @@ STATUS=$(guile (status "$1" "$2"))
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
-	$(call STATUS,Link,$(or $*, $(notdir $@)))
-	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+	$$(call STATUS,Link,$(or $$*, $(notdir $$@)))
+	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $$@ $$^ $(LDLIBS)
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
@@ -52,7 +52,7 @@ define COMPILE =
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM -MG $(CFLAGS) -c $<
+	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM -MG $(CFLAGS) $<
 endef
 
 # example:

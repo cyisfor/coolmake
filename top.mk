@@ -12,7 +12,7 @@ else
 num:=$(words $(MAKEFILE_LIST))
 TOP:=$(wordlist 1,$(num),dummyprefixthing $(MAKEFILE_LIST))
 TOP:=$(dir $(lastword $(TOP)))
-VPATH+=$(TOP)
+VPATH+=$(TOP)src
 endif
 
 O:=$(TOP)o
@@ -21,19 +21,18 @@ define PROGRAM
 $(TOP)$(OUT): $(OBJECTS)
 
 $(TOP)$(OUT): $(TOP)%:
-	$(LINK)
-
+$(LINK)
 endef
-
 
 # generate objects, and also update .d files
 # this is a really sneaky trick, so I'll explain
 # thanks to Tom Tromney I guess for this trick (whoever he is)
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 
-$(O)/%.lo: %.c | $(O)/%.d $(O)
+$(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)
 	$(COMPILE)
-$(O)/%.d: %.c | $(O)
+
+$(O)/%.d: $(TOP)src/%.c | $(O)
 	$(COMPILEDEP)
 
 define OBJECT

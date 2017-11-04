@@ -11,5 +11,9 @@
 		((white) "\x1b[01;37m")))
 
 (define (status type message)
-	(write-string (string-append (color 'white) type (color 'yellow) message (color 'reset)))
-	(newline))
+	(display (string-append
+						(color 'white) type
+						" "
+						(color 'yellow) message
+						(color 'reset) "\n")))
+

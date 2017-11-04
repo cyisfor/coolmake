@@ -33,16 +33,16 @@ endif
 LIBTOOL+=--mode=
 
 all:
-	@echo $(COLOR.green)DONE
+	@echo DONE
 
 $(guile (load "coolmake/status.scm"))
-STATUS=$(guile (status $1 $2))
+STATUS=$(guile (status "$1" "$2"))
+
 
 # generate stuff like programs, libraries, and object files
 # since these are lazy, will handle any target specific CFLAGS or w/ev (like INC)
 # note, libtool takes care of adding -shared or -fPIC or whatever
 define LINK =
-	$(warning $(call STATUS,Link,hmm $(or $*, $(notdir $@))))
 	$(call STATUS,Link,$(or $*, $(notdir $@)))
 	$(S)$(LIBTOOL)link $(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 endef

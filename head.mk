@@ -48,12 +48,11 @@ define LINK =
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $< \
-	|| (rm -f $(O)/*.d; exit 1)
+	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM -MG $(CFLAGS) $<
+	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM $(CFLAGS) $<
 endef
 
 # example:

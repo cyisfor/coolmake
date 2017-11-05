@@ -1,6 +1,9 @@
 # this makes coolmake. see Makefile.example for how to use otherwise
 
+COOLMAKE=.
+
 include head.mk
+include top.mk
 
 define CLONE =
 ifeq ($(wildcard ~/code/mystuff),)
@@ -32,10 +35,18 @@ CFLAGS+=-ggdb
 VPATH+=mystuff/src
 VPATH+=note/src
 CFLAGS+=-Imystuff/src
-CFLAGS+=-Inote/src
+CFLAGS+=-Inote/
 
 N=compiledep note/note
 compiledep: $(OBJECTS)
 	$(LINK)
+
+N=compiledep
+$(OBJECTS): src/compiledep.c | note mystuff
+	$(COMPILE)
+
+N=note/note
+$(OBJECTS): note/note.c | note $(O)
+	$(COMPILE)
 
 include tail.mk

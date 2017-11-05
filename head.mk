@@ -35,7 +35,9 @@ LIBTOOL+=--mode=
 all:
 	@$(call STATUS,DONE)
 
-$(guile (load "coolmake/status.scm"))
+COOLMAKE?=coolmake
+
+$(guile (load "$(COOLMAKE)/status.scm"))
 STATUS=$(guile (status "$1" "$2"))
 
 
@@ -70,7 +72,7 @@ $1/Makefile: $1/configure
 	./configure
 
 $1/configure: $1/configure.ac
-	sh coolmake/smartautogen.sh $1
+	sh $(COOLMAKE)/smartautogen.sh $1
 endef
 
 # call this with the location, and the library name (libxml2, libxml2) etc
@@ -82,7 +84,7 @@ $$(error provide $1)
 endif
 endef
 
-$(guile (load "coolmake/clonepull.scm"))
+$(guile (load "$(COOLMAKE)/clonepull.scm"))
 CLONEPULL=$(guile (clonepull))
 
 data_to_header_string/pack: | data_to_header_string

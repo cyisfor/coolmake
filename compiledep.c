@@ -1,11 +1,18 @@
 #include "ensure.h"
 #include "mystring.h"
 
+#include <sys/mman.h>
+#include <sys/wait.h>
+
+
 #include <pcre.h>
 
 #include <unistd.h> // fork, write, unlink, etc
 #include <fcntl.h> // open, O_*
 #include <stdlib.h> // mkstemp
+
+#include <assert.h>
+
 
 /* compile, but capture stderr. if "fatal error: X.h: No such file or directory"
 	 then add make rule ourtarget: X.h, then $(MAKE) X.h, then recompile
@@ -19,11 +26,15 @@ int main(int argc, char *argv[])
 		pcre_jit_stack* stack;
 	};
 
+	const char* errstr = NULL;
+	int erroff = 0;
 	struct pat nosuchfile = {
-		.pat = pcre_compile("^([^:]+):.*? fatal error: ([^:]+): No such file or directory$");
+		.pat = pcre_compile("^([^:]+):.*? fatal error: ([^:]+): No such file or directory$",
+												PCRE_MULTILINE,
+												&errstr, &erroff,
+												NULL)
 	};
 	assert(nosuchfile.pat);
-	const char* errstr = NULL;
 	nosuchfile.study = pcre_study(nosuchfile.pat, PCRE_STUDY_JIT_COMPILE, &errstr);
 	assert(nosuchfile.study);
 
@@ -32,7 +43,7 @@ int main(int argc, char *argv[])
 	char* line = NULL;
 	size_t space = 0;
 	// whole match, first subexp, second subexp, then 3/2 extra space.
-#define ovecsize = (6 * 3 / 2);
+#define ovecsize (6 * 3 / 2)
 	int ovec[ovecsize] = {};
 
 	for(;;) {

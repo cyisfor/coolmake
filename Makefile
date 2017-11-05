@@ -51,7 +51,17 @@ N=note/note
 $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
-N=testcompiledep
-$(N): $(OBJECTS)
+COMPILE_PREFIX:=./compiledep 
+
+testcompiledep: o/testcompiledep.o
+	$(LINK)
+o/testcompiledep.o: src/testcompiledep.c
+	$(COMPILE)
+
+o/gen1.h:
+	echo "#include \"o/gen2.h\"" > $@
+
+o/gen2.h:
+	echo "static char makeflags[] = \"$(MAKEFLAGS)\";"
 
 include tail.mk

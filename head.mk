@@ -50,11 +50,11 @@ define LINK =
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $<
+	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT $@ -MMD $(CFLAGS) -c -o $@ $<
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
-	$(S)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM $(CFLAGS) $<
+	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $@ -MT $@ -MM $(CFLAGS) $<
 endef
 
 # example:

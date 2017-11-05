@@ -3,6 +3,7 @@
 
 #include <sys/mman.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 
 #include <pcre.h>
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
 	for(;;) {
 		char template[] = ".tmpXXXXXX";
 		int err = mkstemp(template);
-		unlink(template);
+		ensure_ge(err, 0);
 		int pid = fork();
 		if(pid == 0) {
 			dup2(err,2);
@@ -64,24 +65,26 @@ int main(int argc, char *argv[])
 			break;
 		}
 		struct stat info;
-		ensure0(stat(err,&info));
+		ensure0(fstat(err,&info));
 		const char* mem = mmap(NULL, info.st_size, PROT_READ, MAP_PRIVATE, err, 0);
 		ensure_ne(mem, MAP_FAILED);
 		close(err);
+		unlink(template);		
 
 		size_t offset = 0;
 		while(offset < info.st_size) {
 			int res = pcre_jit_exec(nosuchfile.pat, nosuchfile.study,
 															mem, info.st_size, offset,
 															0, // options
-															ovec, ovecsize);
+															ovec, ovecsize,
+															nosuchfile.stack);
 			if(res != 3) break;
 			// 2 substrings captured
 
 			string source = { mem+ovec[2],ovec[3]-ovec[2] };
 			string header = { mem+ovec[4],ovec[5]-ovec[4] };
 
-			int gen = open("o/gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
+			int gen = open("gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
 			ensure_ge(gen,0);
 
 			write(gen,source.s, source.l);
@@ -101,10 +104,11 @@ int main(int argc, char *argv[])
 			}
 			waitpid(makepid,&status, 0);
 			if(!(WIFEXITED(status) && 0 == WEXITSTATUS(status))) {
+				puts("ooh no");
 				exit(status);
 			}
 
-			offset = off[1]+1;
+			offset = ovec[1]+1;
 		}
 	}
 	return 0;

@@ -5,12 +5,12 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-
 #include <pcre.h>
 
 #include <unistd.h> // fork, write, unlink, etc
 #include <fcntl.h> // open, O_*
 #include <stdlib.h> // mkstemp
+#include <signal.h>
 
 #include <assert.h>
 
@@ -103,9 +103,12 @@ int main(int argc, char *argv[])
 				abort();
 			}
 			waitpid(makepid,&status, 0);
-			if(!(WIFEXITED(status) && 0 == WEXITSTATUS(status))) {
-				puts("ooh no");
-				exit(status);
+			if(WIFEXITED(status)) {
+				if (0 != WEXITSTATUS(status)) {
+					exit(WEXITSTATUS(status));
+				}
+			} else {
+				raise(WTERMSIG(status));
 			}
 
 			offset = ovec[1]+1;

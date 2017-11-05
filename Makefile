@@ -37,6 +37,8 @@ VPATH+=note/src
 CFLAGS+=-Imystuff/src
 CFLAGS+=-Inote/
 
+LDLIBS+=-lpcre
+
 N=compiledep note/note
 compiledep: $(OBJECTS)
 	$(LINK)
@@ -48,5 +50,8 @@ $(OBJECTS): src/compiledep.c | note mystuff
 N=note/note
 $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
+
+N=testcompiledep
+$(N): $(OBJECTS)
 
 include tail.mk

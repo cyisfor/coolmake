@@ -21,7 +21,7 @@ define PROGRAM
 $(TOP)$(OUT): $(OBJECTS)
 
 $(TOP)$(OUT): $(TOP)%:
-$(LINK)
+$(value LINK)
 endef
 
 $(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)

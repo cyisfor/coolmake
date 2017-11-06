@@ -48,15 +48,22 @@ N=compiledep
 $(OBJECTS): src/compiledep.c | note mystuff
 	$(COMPILE)
 
+compiledep: COMPILE_PREFIX:=
+
 N=note/note
 $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
 testcompiledep: COMPILE_PREFIX:=+./compiledep #
-testcompiledep: o/testcompiledep.o compiledep
+o/testcompiledep.d: COMPILE_PREFIX:=+./compiledep #
+o/testcompiledep.d: compiledep
+
+N=testcompiledep
+$(N): $(OBJECTS)
 	$(LINK)
-o/testcompiledep.o: src/testcompiledep.c
-	$(COMPILE)
+$(OBJECTS): compiledep
+
+all: testcompiledep
 
 o/gen1.h:
 	echo "#include \"o/gen2.h\"" > $@

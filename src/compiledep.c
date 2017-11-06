@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
 		char template[] = ".tmpXXXXXX";
 		int err = mkstemp(template);
 		ensure_ge(err, 0);
+		//unlink(template);
+
 		int pid = fork();
 		if(pid == 0) {
 			dup2(err,2);
@@ -71,7 +73,6 @@ int main(int argc, char *argv[])
 		const char* mem = mmap(NULL, info.st_size, PROT_READ, MAP_PRIVATE, err, 0);
 		ensure_ne(mem, MAP_FAILED);
 		close(err);
-		unlink(template);		
 
 		size_t offset = 0;
 		while(offset < info.st_size) {

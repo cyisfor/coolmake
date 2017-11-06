@@ -34,6 +34,7 @@ all: compiledep
 CFLAGS+=-ggdb
 VPATH+=mystuff/src
 VPATH+=note/src
+CFLAGS+=-I.
 CFLAGS+=-Imystuff/src
 CFLAGS+=-Inote/
 
@@ -51,9 +52,8 @@ N=note/note
 $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
-COMPILE_PREFIX:=./compiledep 
-
-testcompiledep: o/testcompiledep.o
+testcompiledep: COMPILE_PREFIX:=+./compiledep #
+testcompiledep: o/testcompiledep.o compiledep
 	$(LINK)
 o/testcompiledep.o: src/testcompiledep.c
 	$(COMPILE)
@@ -62,6 +62,6 @@ o/gen1.h:
 	echo "#include \"o/gen2.h\"" > $@
 
 o/gen2.h:
-	echo "static char makeflags[] = \"$(MAKEFLAGS)\";"
+	echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk

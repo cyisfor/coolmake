@@ -28,11 +28,12 @@ int main(int argc, char *argv[])
 		setenv("COMPILEDEP_depth","1",1);
 	} else {
 		int depth = strtol(getenv("COMPILEDEP_depth"),NULL,10);
-		if(depth > 8) {
+		if(depth > 16) {
 			/* A needs B which has no rule to generate it,
 				 but -include A
 				 so A fails to make B, which makes A b/c -include, which fails to make B, etc...
 			*/
+			fprintf(stderr,"Nesting compiledep too deep! Exiting out of fear.\n");
 			exit(2);
 		}
 		char buf[0x100];
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 		char template[] = ".tmpXXXXXX";
 		int err = mkstemp(template);
 		ensure_ge(err, 0);
-		//unlink(template);
+		unlink(template);
 
 		int pid = fork();
 		if(pid == 0) {
@@ -119,13 +120,13 @@ int main(int argc, char *argv[])
 			string header = { mem+ovec[4],ovec[5]-ovec[4] };
 
 			// getenv("O") ?
-			int gen = open("o/gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
+			int gen = open("o/lostdeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
 			ensure_ge(gen,0);
 
 			write(gen,target.s, target.l);
 			write(gen, LITLEN(" "));
 			write(gen, source.s, source.l);
-			write(gen, LITLEN(" o/gendeps.d: "));
+			write(gen, LITLEN(" o/lostdeps.d: "));
 			write(gen, header.s, header.l);
 			write(gen, LITLEN("\n"));
 			close(gen);

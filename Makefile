@@ -80,4 +80,4 @@ o/gen2.h: | o
 	$(S)echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk
--include o/gendeps.d
+-include o/lostdeps.d

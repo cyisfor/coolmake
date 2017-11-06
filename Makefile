@@ -54,7 +54,7 @@ N=note/note
 $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
-testcompiledep: COMPILE_PREFIX:=+./compiledep #
+testcompiledep: COMPILE_PREFIX=+./compiledep $@ #
 
 N=testcompiledep
 $(N): o/$(N).lo
@@ -73,4 +73,4 @@ o/gen2.h:
 	$(S)echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk
-
+-include gendeps.d

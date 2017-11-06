@@ -21,13 +21,19 @@
 
 int main(int argc, char *argv[])
 {
-	if(argc <= 2) exit(1);
+	if(argc <= 3) exit(1);
 	
 	struct pat {
 		pcre* pat;
 		pcre_extra* study;
 		pcre_jit_stack* stack;
 	};
+
+	string target = {
+		.s = argv[1]
+	};
+	target.l = strlen(target.s);
+		
 
 	const char* errstr = NULL;
 	int erroff = 0;
@@ -59,7 +65,7 @@ int main(int argc, char *argv[])
 		if(pid == 0) {
 			dup2(err,2);
 			close(err);
-			execvp(argv[1], argv+1);
+			execvp(argv[2], argv+2);
 			abort();
 		}
 		int status = 0;
@@ -90,7 +96,7 @@ int main(int argc, char *argv[])
 			int gen = open("gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
 			ensure_ge(gen,0);
 
-			write(gen,source.s, source.l);
+			write(gen,target.s, target.l);
 			write(gen, LITLEN(" o/gendeps.d: "));
 			write(gen, header.s, header.l);
 			write(gen, LITLEN("\n"));

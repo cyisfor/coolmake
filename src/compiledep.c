@@ -22,6 +22,24 @@
 int main(int argc, char *argv[])
 {
 	if(argc <= 3) exit(1);
+
+	if(NULL == getenv("COMPILEDEP_depth")) {
+		setenv("COMPILEDEP_depth","1",1);
+	} else {
+		int depth = strtol(getenv("COMPILEDEP_depth"));
+		if(depth > 8) {
+			/* A needs B which has no rule to generate it,
+				 but -include A
+				 so A fails to make B, which makes A b/c -include, which fails to make B, etc...
+			*/
+			exit(2);
+		}
+		char buf[0x100];
+		size_t len = itoa(buf,0x100,depth+1);
+		buf[len] = '\0';
+		setenv("COMPILEDEP_depth",buf,1);
+	}
+	const char* last_source = getenv("COMPILEDEP_last");
 	
 	struct pat {
 		pcre* pat;
@@ -91,12 +109,19 @@ int main(int argc, char *argv[])
 			// 2 substrings captured
 
 			string source = { mem+ovec[2],ovec[3]-ovec[2] };
+
+			if(last_source && 0 == strncmp(last_source,source.s, source.l)) {
+				error("we already failed for %.*s!",source.l,source.s);
+			}
+			
 			string header = { mem+ovec[4],ovec[5]-ovec[4] };
 
 			int gen = open("gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
 			ensure_ge(gen,0);
 
 			write(gen,target.s, target.l);
+			write(gen, LITLEN(" "));
+			write(gen, source.s, source.l);
 			write(gen, LITLEN(" o/gendeps.d: "));
 			write(gen, header.s, header.l);
 			write(gen, LITLEN("\n"));

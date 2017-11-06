@@ -59,11 +59,9 @@ $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
 testcompiledep: COMPILE_PREFIX=+./compiledep $@ #
-o/testcompiledep.d: COMPILE_PREFIX=+./compiledep $@ #
 
 N=testcompiledep
 $(N): $(OBJECTS)
-	$(error $(ALLN))
 	$(LINK)
 
 o/$(N).lo: src/testcompiledep.c compiledep

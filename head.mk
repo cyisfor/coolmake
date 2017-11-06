@@ -12,6 +12,11 @@ CFLAGS+=-fdiagnostics-color=auto
 CFLAGS+=$(patsubst %,-I%,$(INC))
 #INC:=otherinclude
 
+
+ifeq ($(V),)
+MAKEFLAGS+=-s
+endif
+
 O:=o # switch to $(TOP)o later
 
 # switch all names for object names, and add those names to the list of module names compiled

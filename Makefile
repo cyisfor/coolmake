@@ -55,20 +55,22 @@ $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
 testcompiledep: COMPILE_PREFIX:=+./compiledep #
-o/testcompiledep.d: COMPILE_PREFIX:=+./compiledep #
-o/testcompiledep.d: compiledep
 
 N=testcompiledep
-$(N): $(OBJECTS)
+$(N): o/$(N).lo
 	$(LINK)
-$(OBJECTS): compiledep
+o/$(N).lo: src/testcompiledep.c compiledep
+	$(COMPILE)
 
 all: testcompiledep
 
 o/gen1.h:
-	echo "#include \"o/gen2.h\"" > $@
+	$(call STATUS,Gen,1)
+	$(S)echo "#include \"o/gen2.h\"" > $@
 
 o/gen2.h:
-	echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
+	$(call STATUS,Gen,2)
+	$(S)echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk
+

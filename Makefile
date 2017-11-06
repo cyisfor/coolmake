@@ -40,7 +40,7 @@ CFLAGS+=-Inote/
 
 LDLIBS+=-lpcre
 
-N=compiledep note/note
+N=compiledep note/note itoa
 compiledep: $(OBJECTS)
 	$(LINK)
 
@@ -49,6 +49,10 @@ $(OBJECTS): src/compiledep.c | note mystuff
 	$(COMPILE)
 
 compiledep: COMPILE_PREFIX:=
+
+N=itoa
+$(OBJECTS): mystuff/src/itoa.c | mystuff $(O)
+	$(COMPILE)
 
 N=note/note
 $(OBJECTS): note/note.c | note $(O)

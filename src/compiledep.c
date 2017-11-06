@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	if(NULL == getenv("COMPILEDEP_depth")) {
 		setenv("COMPILEDEP_depth","1",1);
 	} else {
-		int depth = strtol(getenv("COMPILEDEP_depth"));
+		int depth = strtol(getenv("COMPILEDEP_depth"),NULL,10);
 		if(depth > 8) {
 			/* A needs B which has no rule to generate it,
 				 but -include A

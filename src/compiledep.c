@@ -1,3 +1,4 @@
+#include "itoa.h"
 #include "ensure.h"
 #include "mystring.h"
 
@@ -111,12 +112,14 @@ int main(int argc, char *argv[])
 			string source = { mem+ovec[2],ovec[3]-ovec[2] };
 
 			if(last_source && 0 == strncmp(last_source,source.s, source.l)) {
-				error("we already failed for %.*s!",source.l,source.s);
+				// XXX: this never seems to happen?
+				fprintf(stderr,"we already failed for %.*s!\n",source.l,source.s);
 			}
 			
 			string header = { mem+ovec[4],ovec[5]-ovec[4] };
 
-			int gen = open("gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
+			// getenv("O") ?
+			int gen = open("o/gendeps.d",O_WRONLY|O_APPEND|O_CREAT,0644);
 			ensure_ge(gen,0);
 
 			write(gen,target.s, target.l);

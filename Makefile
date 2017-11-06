@@ -59,22 +59,25 @@ $(OBJECTS): note/note.c | note $(O)
 	$(COMPILE)
 
 testcompiledep: COMPILE_PREFIX=+./compiledep $@ #
+o/testcompiledep.d: COMPILE_PREFIX=+./compiledep $@ #
 
 N=testcompiledep
-$(N): o/$(N).lo
+$(N): $(OBJECTS)
+	$(error $(ALLN))
 	$(LINK)
+
 o/$(N).lo: src/testcompiledep.c compiledep
 	$(COMPILE)
 
 all: testcompiledep
 
-o/gen1.h:
+o/gen1.h: | o
 	$(call STATUS,Gen,1)
 	$(S)echo "#include \"o/gen2.h\"" > $@
 
-o/gen2.h:
+o/gen2.h: | o
 	$(call STATUS,Gen,2)
 	$(S)echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk
--include gendeps.d
+-include o/gendeps.d

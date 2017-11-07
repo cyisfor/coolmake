@@ -6,7 +6,7 @@ include head.mk
 include top.mk
 
 define CLONE =
-ifeq ($(wildcard ~/code/mystuff),)
+ifeq ($(wildcard $(dest)),)
 $(dest):
 	git clone $(remote) $(dest).temp
 	cd $(dest).temp && git remote add local $(local)
@@ -17,7 +17,15 @@ $(dest):
 	cd $(dest).temp && git remote set-url origin $(remote) && git remote add local $(local)
 	mv $(dest).temp $(dest)
 endif
-endef 
+update: $(dest)-update
+$(dest)-update: | $(dest)
+	cd $| && git pull $(local)
+ifeq ($(noremote),)
+	cd $| && git pull $(remote)
+endif
+.PHONY: $(dest)-update
+endef
+.PHONY: update
 
 local:=~/code/mystuff
 remote:=https://github.com/cyisfor/cyutil/

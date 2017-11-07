@@ -62,6 +62,6 @@
 						(when remote
 							(nocheck-system "git remote set-url origin" remote))
 						(when local
-							(nocheck-system "git remote set-url local" local))
+							(nocheck-system "git remote add local" local))
 						(chdir ".."))
 					(check-system "git clone  --recursive" remote dest))))

@@ -26,12 +26,24 @@ $(O)/%.d: $(TOP)src/%.c | $(O)
 
 REDEPENDENCY=echo eh
 
-define PROGRAM
+define PROGRAM_template
 $(TOP)$(OUT): $(OBJECTS)
 
 $(TOP)$(OUT): $(TOP)%:
 $(value LINK)
+
+$(OBJECTS): @orule@
+	$(COMPILE)
+$(DEPENDENCIES): @drule@
+	$(COMPILEDEP)
 endef
+
+define PROGRAM
+$(error $(subst @drule@,$(or $(DRULE),$$(O)/%.d: %.c)),$(subst @orule@,$(or $(ORULE),$$(O)/%.lo: %.c)))
+endef
+
+N=a b c d
+$(call PROGRAM)
 
 define OBJECT
 $(O)/$(OUT).lo: $(N).c

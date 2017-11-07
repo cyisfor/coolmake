@@ -42,7 +42,9 @@ endef
 
 ORULE=%.lo: %.c
 DRULE=%.d: %.c
-$(eval P2:=$(PROGRAM_template))
+$(eval define P2 :=
+$(PROGRAM_template)
+endef)
 $(error $(P2))
 $(error $(value PROGRAM_template3))
 

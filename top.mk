@@ -33,16 +33,23 @@ $(TOP)$(OUT): $(TOP)%:
 $(value LINK)
 
 $(OBJECTS): @orule@
-	$(COMPILE)
+$(value COMPILE)
+
 $(DEPENDENCIES): @drule@
-	$(COMPILEDEP)
+$(value COMPILEDEP)
 endef
+# it looks prettier if we don't have to $$ everywhere
+PROGRAM_template2:=$(subst $,$$,$(value PROGRAM_template))
+$(error $(PROGRAM_template2))
+PROGRAM_template2:=$(subst @orule@,$$(ORULE),$(PROGRAM_template))
+PROGRAM_template=$(subst @drule@,$$(DRULE),$(PROGRAM_template2))
 
 define PROGRAM
-$(error $(subst @drule@,$(or $(DRULE),$$(O)/%.d: %.c)),$(subst @orule@,$(or $(ORULE),$$(O)/%.lo: %.c)))
+$(error 
 endef
 
 N=a b c d
+OUT=foo
 $(call PROGRAM)
 
 define OBJECT

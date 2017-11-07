@@ -27,26 +27,24 @@ $(O)/%.d: $(TOP)src/%.c | $(O)
 REDEPENDENCY=echo eh
 
 define PROGRAM_template
-$(TOP)$(OUT): $(OBJECTS)
+$$(TOP)$$(OUT): $$(OBJECTS)
 
-$(TOP)$(OUT): $(TOP)%:
-$(value LINK)
+$$(TOP)$$(OUT): $$(TOP)%:
+$$(value LINK)
 
-$(OBJECTS): @orule@
-$(value COMPILE)
+$$(OBJECTS): $$(O)/$(ORULE)
+$$(value COMPILE)
 
-$(DEPENDENCIES): @drule@
-$(value COMPILEDEP)
+$$(DEPENDENCIES): $$(O)/$(DRULE)
+$$(value COMPILEDEP)
 endef
 # it looks prettier if we don't have to $$ everywhere
-PROGRAM_template2:=$(subst $,$$,$(value PROGRAM_template))
-$(error $(PROGRAM_template2))
-PROGRAM_template2:=$(subst @orule@,$$(ORULE),$(PROGRAM_template))
-PROGRAM_template=$(subst @drule@,$$(DRULE),$(PROGRAM_template2))
 
-define PROGRAM
-$(error 
-endef
+ORULE=%.lo: %.c
+DRULE=%.d: %.c
+$(eval P2:=$(PROGRAM_template))
+$(error $(P2))
+$(error $(value PROGRAM_template3))
 
 N=a b c d
 OUT=foo

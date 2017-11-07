@@ -76,10 +76,14 @@ N=testcompiledep
 $(N): $(OBJECTS)
 	$(LINK)
 
-o/$(N).d: COMPILE_PREFIX=+./compiledep $@ #
-o/$(N).d: compiledep
+define COMPILEDEP
+o/$(N).d: COMPILE_PREFIX=+$(COOLMAKE)/compiledep $$@ #
+o/$(N).d: $(COOLMAKE)/compiledep | $$(O)
+endef
+$(eval $(COMPILEDEP))
 
-o/$(N).lo: src/testcompiledep.c compiledep
+
+o/$(N).lo: src/testcompiledep.c
 	$(COMPILE)
 
 all: testcompiledep

@@ -29,7 +29,7 @@ O:=o # switch to $(TOP)o later
 #every link depends on ALLN
 #ALLN=common ferrets note
 OBJECTS=$(patsubst %,$(O)/%.lo,$N $(ALLN)) \
-$(eval mods:=$$(mods) $(N))
+$(eval mods:=$$(sort $$(mods) $(N)))
 
 # libtool needs to be told to be quiet
 # $(S) will be @ except when V=1

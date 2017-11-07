@@ -6,7 +6,7 @@ include head.mk
 include top.mk
 
 define CLONE =
-ifeq ($(wildcard $(dest)),)
+ifeq ($(wildcard $(local)),)
 $(dest):
 	git clone $(remote) $(dest).temp
 	cd $(dest).temp && git remote add local $(local)
@@ -48,7 +48,7 @@ CFLAGS+=-Inote/
 
 LDLIBS+=-lpcre
 
-N=compiledep note/note itoa
+N=compiledep note itoa
 compiledep: $(OBJECTS)
 	$(LINK)
 
@@ -59,18 +59,23 @@ $(OBJECTS): src/compiledep.c | note mystuff
 compiledep: COMPILE_PREFIX:=
 
 N=itoa
-$(OBJECTS): mystuff/src/itoa.c | mystuff $(O)
+$(OBJECTS): mystuff/src/itoa.c | $(O)
 	$(COMPILE)
+mystuff/src/itoa.c: | mystuff
 
-N=note/note
-$(OBJECTS): note/note.c | note $(O)
+N=note
+$(OBJECTS): note/note.c | $(O)
 	$(COMPILE)
+note/note.c: | note
 
 testcompiledep: COMPILE_PREFIX=+./compiledep $@ #
 
 N=testcompiledep
 $(N): $(OBJECTS)
 	$(LINK)
+
+o/$(N).d: COMPILE_PREFIX=+./compiledep $@ #
+o/$(N).d: compiledep
 
 o/$(N).lo: src/testcompiledep.c compiledep
 	$(COMPILE)

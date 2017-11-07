@@ -53,8 +53,10 @@ compiledep: $(OBJECTS)
 	$(LINK)
 
 N=compiledep
-$(OBJECTS): src/compiledep.c | note mystuff
+$(OBJECTS): src/compiledep.c | note
 	$(COMPILE)
+# XXX: make seems to only consider the first order-only thingie in a rule
+$(OBJECTS): | mystuff
 
 compiledep: COMPILE_PREFIX:=
 
@@ -68,7 +70,7 @@ $(OBJECTS): note/note.c | $(O)
 	$(COMPILE)
 note/note.c: | note
 
-testcompiledep: COMPILE_PREFIX=+./compiledep $@ #
+testcompiledep:
 
 N=testcompiledep
 $(N): $(OBJECTS)
@@ -88,6 +90,10 @@ o/gen1.h: | o
 
 o/gen2.h: | o
 	$(call STATUS,Gen,2)
+	$(S)echo "#include \"o/gen3.h\"" > $@
+
+o/gen3.h: | o
+	$(call STATUS,Gen,3)
 	$(S)echo "static char makeflags[] = \"$(MAKEFLAGS)\";" >$@
 
 include tail.mk

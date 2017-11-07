@@ -2,6 +2,11 @@ all: # have stuff depend on this to be built
 
 VPATH+=src
 
+COOLMAKE?=coolmake
+# include $(COOLMAKE)/top.mk
+
+
+# pkg-config stuff
 # lazy evaluation, so we can't use ifeq()
 CFLAGS+=$(if $(P),$(shell pkg-config --cflags $(P)))
 LDLIBS+=$(if $(P),$(shell pkg-config --libs $(P)))
@@ -39,8 +44,6 @@ LIBTOOL+=--mode=
 
 all:
 	@$(call STATUS,DONE)
-
-COOLMAKE?=coolmake
 
 $(guile (load "$(COOLMAKE)/status.scm"))
 STATUS=$(guile (status "$1" "$2"))

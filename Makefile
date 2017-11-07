@@ -33,7 +33,7 @@ all: compiledep
 
 CFLAGS+=-ggdb
 VPATH+=mystuff/src
-VPATH+=note/src
+VPATH+=note/
 CFLAGS+=-I.
 CFLAGS+=-Imystuff/src
 CFLAGS+=-Inote/

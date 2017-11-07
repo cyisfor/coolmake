@@ -17,13 +17,6 @@ endif
 
 O:=$(TOP)o
 
-define PROGRAM
-$(TOP)$(OUT): $(OBJECTS)
-
-$(TOP)$(OUT): $(TOP)%:
-$(value LINK)
-endef
-
 $(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)
 	$(COMPILE)
 
@@ -32,6 +25,13 @@ $(O)/%.d: $(TOP)src/%.c | $(O)
 	$(eval LASTDEP?=$@)
 
 REDEPENDENCY=echo eh
+
+define PROGRAM
+$(TOP)$(OUT): $(OBJECTS)
+
+$(TOP)$(OUT): $(TOP)%:
+$(value LINK)
+endef
 
 define OBJECT
 $(O)/$(OUT).lo: $(N).c

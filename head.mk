@@ -39,8 +39,16 @@ O:=o # switch to $(TOP)o later
 # since this is lazy, $N will be different if we assign it, then access $(O)
 #every link depends on ALLN
 #ALLN=common ferrets note
-OBJECTS=$(patsubst %,$(O)/%.lo,$N $(ALLN)) \
-$(eval mods:=$$(sort $$(mods) $(N)))
+define commit_objects =
+mods:=$$(sort $$(mods) $(N))
+undefine N
+undefine LIBS
+endef
+
+define OBJECTS =
+$(patsubst %,$(O)/%.lo,$N $ $(ALLN)) $(LIBS) \
+$(eval $(commit_objects)) 
+endef
 
 # libtool needs to be told to be quiet
 # $(S) will be @ except when V=1
@@ -69,7 +77,7 @@ define LINK =
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
-	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT "$@ $(addsuffix .d, $(basename $<))" -MMD $(CFLAGS) -c -o $@ $<
+	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT "$@ $(addsuffix .d, $(basename $<))" -MMD $(CFLAGS) -c -o $@ $(filter %.c,$^)
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))

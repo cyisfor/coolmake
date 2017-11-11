@@ -11,3 +11,5 @@ git-tools/funcs.sh: | git-tools
 git-tools:
 	git submodule add -b master https://github.com/cyisfor/git-tools
 	cd git-tools && git commit -a -m 'git-tools submodule'
+
+.PRECIOUS: coolmake/main.mk # wtf

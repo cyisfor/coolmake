@@ -16,6 +16,7 @@ VPATH+=src
 COOLMAKE?=coolmake
 # include $(COOLMAKE)/top.mk
 
+CLEANING:=$(findstring $(MAKECMDGOALS),clean)
 
 # pkg-config stuff
 # lazy evaluation, so we can't use ifeq()
@@ -43,10 +44,16 @@ define commit_objects =
 mods:=$$(sort $$(mods) $(N))
 endef
 
-OBJ=$(patsubst %,$(O)/%.lo,$N $(ALLN))
+define OBJ =
+$(patsubst %,$(O)/%.lo,$N $(ALLN))
+endef
+
+define DEP =
+$(patsubst %,$(O)/%.d,$N $(ALLN))
+endef
 
 define OBJECTS =
-$(OBJ) \
+$(OBJ)\
 $(eval $(commit_objects)) 
 endef
 
@@ -83,6 +90,9 @@ define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
 	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $@ -MT "$(addsuffix .lo, $(basename $@)) $@" -MM $(CFLAGS) $<
 endef
+define UPLINK =
+$(if $(CLEANING),,$(if $(wildcard $2),,$(call STATUS,Uplink,$1 $2)$(shell ln -rs $1/$2 $2)))
+endef
 
 # example:
 # N=main module
@@ -92,18 +102,28 @@ endef
 
 define AUTOMAKE_SUBPROJECT_SCRIPT =
 VPATH+=$1
-$1/$2.la: $1/Makefile
+$1/$2.la: $1/Makefile | $1
 	$$(MAKE) -C $1 $2.la
 
 $1/Makefile: $1/configure
 	./configure
 
 $1/configure: $1/configure.ac
+	echo fuck
+	exit 3
 	sh $(COOLMAKE)/smartautogen.sh $1
+
+$1/configure.ac: ;
+# can't target something we symlink, because it can't be created
+# without making it out of date
+# so configure.ac has to just... exist, and use $(shell) to symlink $1?
+# $(call UPLINK subdir, name) ...
+
+.PRECIOUS: $1/configure $1/Makefile
 endef
 
 # call this with the location, and the library name (libxml2, libxml2) etc
-AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT, $1, $2))
+AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT,$1,$2))
 
 define REQUIRE_VAR =
 ifeq ($$$1,)

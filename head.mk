@@ -16,6 +16,7 @@ VPATH+=src
 COOLMAKE?=coolmake
 # include $(COOLMAKE)/top.mk
 
+CLEANING:=$(findstring $(MAKECMDGOALS),clean)
 
 # pkg-config stuff
 # lazy evaluation, so we can't use ifeq()
@@ -89,8 +90,8 @@ define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
 	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $@ -MT "$(addsuffix .lo, $(basename $@)) $@" -MM $(CFLAGS) $<
 endef
-define SYMLINK =
-	ln -rs $(or $<,$|) $@
+define UPLINK =
+$(if $(CLEANING),,$(if $(wildcard $2),,$(call STATUS,Uplink,$1 $2)$(shell ln -rs $1/$2 $2)))
 endef
 
 # example:
@@ -106,13 +107,17 @@ $1/$2.la: $1/Makefile | $1
 
 $1/Makefile: $1/configure
 	./configure
-# can't have configure.ac depend on order-only $1 or it'll run autogen
-$1/configure: $1/configure.ac | $1
+
+$1/configure: $1/configure.ac
 	echo fuck
 	exit 3
 	sh $(COOLMAKE)/smartautogen.sh $1
 
 $1/configure.ac: ;
+# can't target something we symlink, because it can't be created
+# without making it out of date
+# so configure.ac has to just... exist, and use $(shell) to symlink $1?
+# $(call UPLINK subdir, name) ...
 
 .PRECIOUS: $1/configure $1/Makefile
 endef

@@ -26,35 +26,27 @@ $(O)/%.d: $(TOP)src/%.c | $(O)
 
 REDEPENDENCY=echo eh
 
-define PROGRAM_template
-$$(TOP)$$(OUT): $$(OBJECTS)
+ifeq ($(wildcard $(TOP)src),)
+SRC?=$(TOP)
+else
+SRC?=$(TOP)src
+endif
 
-$$(TOP)$$(OUT): $$(TOP)%:
-$$(value LINK)
+$(O)/%.lo: $(SRC)/%.c
+	$(COMPILE)
+$(O)/%.d: $(SRC)/%.c
+	$(COMPILEDEP)
 
-$$(OBJECTS): $$(O)/$(ORULE)
-$$(value COMPILE)
+define PROGRAM
+$(TOP)$(OUT): $(OBJECTS)
 
-$$(DEPENDENCIES): $$(O)/$(DRULE)
-$$(value COMPILEDEP)
+$(TOP)$(OUT): $(TOP)%:
+$(value LINK)
 endef
-# it looks prettier if we don't have to $$ everywhere
 
-ORULE=%.lo: %.c
-DRULE=%.d: %.c
-$(eval define P2 :=
-$(PROGRAM_template)
-endef)
-$(error $(P2))
-$(error $(value PROGRAM_template3))
-
-N=a b c d
-OUT=foo
-$(call PROGRAM)
-
-define OBJECT
-$(O)/$(OUT).lo: $(N).c
-endef
+# N=a b c d
+# OUT=foo
+# $(eval $(PROGRAM))
 
 $(O):
 	$(call STATUS,Directory,$@)

@@ -17,42 +17,31 @@ endif
 
 O:=$(TOP)o
 
-$(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)
+ifeq ($(wildcard $(TOP)src),)
+SRC?=$(TOP)
+else
+SRC?=$(TOP)src
+endif
+
+$(O)/%.lo: $(SRC)/%.c | $(O)
 	$(COMPILE)
 
-$(O)/%.d: $(TOP)src/%.c | $(O)
+$(O)/%.d: $(SRC)/%.c | $(O)
 	$(COMPILEDEP)
 	$(eval LASTDEP?=$@)
 
-REDEPENDENCY=echo eh
+define PROGRAM
+$(TOP)$(OUT): $(OBJECTS)
 
-define PROGRAM_template
-$$(TOP)$$(OUT): $$(OBJECTS)
+$(OBJECTS): | $(O)
 
-$$(TOP)$$(OUT): $$(TOP)%:
-$$(value LINK)
-
-$$(OBJECTS): $$(O)/$(ORULE)
-$$(value COMPILE)
-
-$$(DEPENDENCIES): $$(O)/$(DRULE)
-$$(value COMPILEDEP)
+$(TOP)$(OUT): $(TOP)%:
+$(value LINK)
 endef
-# it looks prettier if we don't have to $$ everywhere
 
-ORULE=%.lo: %.c
-DRULE=%.d: %.c
-$(eval P2:=$(PROGRAM_template)
-$(error $(P2))
-$(error $(value PROGRAM_template3))
-
-N=a b c d
-OUT=foo
-$(call PROGRAM)
-
-define OBJECT
-$(O)/$(OUT).lo: $(N).c
-endef
+# N=a b c d
+# OUT=foo
+# $(eval $(PROGRAM))
 
 $(O):
 	$(call STATUS,Directory,$@)

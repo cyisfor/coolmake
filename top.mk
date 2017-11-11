@@ -33,7 +33,6 @@ $(O)/%.d: $(SRC)/%.c | $(O)
 	$(COMPILEDEP)
 	$(eval LASTDEP?=$@)
 
-REDEPENDENCY=echo eh
 
 define PROGRAM
 $(TOP)$(OUT): $(OBJECTS)

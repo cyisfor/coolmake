@@ -3,3 +3,5 @@ ifneq ($(MAKECMDGOALS),clean)
 # include all the dependencies for the modules found so far via $(N) / $(O)
 -include $(patsubst %, $(O)/%.d,$(mods) $(ALLN))
 endif
+
+$(eval $(POPVARS))

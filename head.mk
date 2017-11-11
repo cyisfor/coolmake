@@ -1,5 +1,13 @@
 all: # have stuff depend on this to be built
 
+define POPVARS :=
+O=$(O)
+TOP=$(TOP)
+define POPVARS :=
+$(POPVARS)
+endef
+endef
+
 VPATH+=src
 
 COOLMAKE?=coolmake

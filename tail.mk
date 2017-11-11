@@ -4,4 +4,4 @@ ifneq ($(MAKECMDGOALS),clean)
 -include $(patsubst %, $(O)/%.d,$(mods) $(ALLN))
 endif
 
-$(eval $(POPVARS))
+#$(eval $(POPVARS))

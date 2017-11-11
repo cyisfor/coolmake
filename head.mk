@@ -2,14 +2,14 @@ all: # have stuff depend on this to be built
 
 define PUSHVARS
 define POPVARS :=
-O=$(O)
-TOP=$(TOP)
+O:=$(O)
+TOP:=$(TOP)
 define POPVARS :=
 $(POPVARS)
 endef
 endef
 endef
-$(eval $(PUSHVARS))
+# $(eval $(PUSHVARS))
 
 VPATH+=src
 
@@ -43,8 +43,10 @@ define commit_objects =
 mods:=$$(sort $$(mods) $(N))
 endef
 
+OBJ=$(patsubst %,$(O)/%.lo,$N $(ALLN))
+
 define OBJECTS =
-$(patsubst %,$(O)/%.lo,$N $ $(ALLN)) \
+$(OBJ) \
 $(eval $(commit_objects)) 
 endef
 
@@ -75,7 +77,7 @@ define LINK =
 endef
 define COMPILE =
 	$(call STATUS,Compile,$(or $*, $(basename $(notdir $@))))
-	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT "$@ $(addsuffix .d, $(basename $<))" -MMD $(CFLAGS) -c -o $@ $(filter %.c,$^)
+	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $(addsuffix .d, $(basename $<)) -MT "$@ $(addsuffix .d, $(basename $<))" -MMD $(CFLAGS) -c -o $@ $<
 endef
 define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))

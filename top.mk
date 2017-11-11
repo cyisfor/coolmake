@@ -17,25 +17,23 @@ endif
 
 O:=$(TOP)o
 
-$(O)/%.lo: $(TOP)src/%.c | $(O)/%.d $(O)
-	$(COMPILE)
-
-$(O)/%.d: $(TOP)src/%.c | $(O)
-	$(COMPILEDEP)
-	$(eval LASTDEP?=$@)
-
-REDEPENDENCY=echo eh
-
 ifeq ($(wildcard $(TOP)src),)
 SRC?=$(TOP)
 else
 SRC?=$(TOP)src
 endif
 
-$(O)/%.lo: $(SRC)/%.c
+$(O)/%.lo: $(SRC)/%.c | $(O)/%.d $(O)
 	$(COMPILE)
-$(O)/%.d: $(SRC)/%.c
+
+$(O)/%.lo: $(O)/%.c | $(O)
+	$(COMPILE)
+
+$(O)/%.d: $(SRC)/%.c | $(O)
 	$(COMPILEDEP)
+	$(eval LASTDEP?=$@)
+
+REDEPENDENCY=echo eh
 
 define PROGRAM
 $(TOP)$(OUT): $(OBJECTS)

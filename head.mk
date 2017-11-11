@@ -47,6 +47,10 @@ define OBJ =
 $(patsubst %,$(O)/%.lo,$N $(ALLN))
 endef
 
+define DEP =
+$(patsubst %,$(O)/%.d,$N $(ALLN))
+endef
+
 define OBJECTS =
 $(OBJ)\
 $(eval $(commit_objects)) 
@@ -102,9 +106,15 @@ $1/$2.la: $1/Makefile | $1
 
 $1/Makefile: $1/configure
 	./configure
-
-$1/configure: $1/configure.ac
+# can't have configure.ac depend on order-only $1 or it'll run autogen
+$1/configure: $1/configure.ac | $1
+	echo fuck
+	exit 3
 	sh $(COOLMAKE)/smartautogen.sh $1
+
+$1/configure.ac: ;
+
+.PRECIOUS: $1/configure $1/Makefile
 endef
 
 # call this with the location, and the library name (libxml2, libxml2) etc

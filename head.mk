@@ -41,12 +41,10 @@ O:=o # switch to $(TOP)o later
 #ALLN=common ferrets note
 define commit_objects =
 mods:=$$(sort $$(mods) $(N))
-undefine N
-undefine LIBS
 endef
 
 define OBJECTS =
-$(patsubst %,$(O)/%.lo,$N $ $(ALLN)) $(LIBS) \
+$(patsubst %,$(O)/%.lo,$N $ $(ALLN)) \
 $(eval $(commit_objects)) 
 endef
 

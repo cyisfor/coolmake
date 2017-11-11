@@ -31,12 +31,12 @@ $(O)/%.d: $(SRC)/%.c | $(O)
 	$(eval LASTDEP?=$@)
 
 define PROGRAM
-$(TOP)$(OUT): $(OBJECTS)
+$(TOP)$(OUT): $(OBJECTS) $(LIBS)
 
-$(OBJECTS): | $(O)
+$(OBJECTS): | $(O) $(LIBS)
 
 $(TOP)$(OUT): $(TOP)%:
-$(value LINK)
+	$(value LINK)
 endef
 
 # N=a b c d

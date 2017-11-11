@@ -16,26 +16,28 @@ VPATH+=$(TOP)src
 endif
 
 O:=$(TOP)o
-
+$(warning oh "$(O)")
 ifeq ($(wildcard $(TOP)src),)
 SRC?=$(TOP)
 else
 SRC?=$(TOP)src
 endif
 
-$(O)/%.lo: $(SRC)/%.c | $(O)/%.d $(O)
+$(O)/%.lo: $(SRC)/%.c | $(O)
 	$(COMPILE)
 
 $(O)/%.lo: $(O)/%.c | $(O)
 	$(COMPILE)
 
 $(O)/%.d: $(SRC)/%.c | $(O)
+	$(warning ohh "$(O)")
 	$(COMPILEDEP)
 	$(eval LASTDEP?=$@)
 
-
 define PROGRAM
 $(TOP)$(OUT): $(OBJECTS)
+
+$(OBJECTS): $(O)
 
 $(TOP)$(OUT): $(TOP)%:
 $(value LINK)
@@ -45,6 +47,6 @@ endef
 # OUT=foo
 # $(eval $(PROGRAM))
 
-$(O):
+$(O)/:
 	$(call STATUS,Directory,$@)
 	$(S)mkdir $@

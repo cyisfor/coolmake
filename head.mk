@@ -1,5 +1,6 @@
 all: # have stuff depend on this to be built
 
+define PUSHVARS
 define POPVARS :=
 O=$(O)
 TOP=$(TOP)
@@ -7,6 +8,8 @@ define POPVARS :=
 $(POPVARS)
 endef
 endef
+endef
+$(eval $(PUSHVARS))
 
 VPATH+=src
 

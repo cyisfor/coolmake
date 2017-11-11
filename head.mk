@@ -43,8 +43,12 @@ define commit_objects =
 mods:=$$(sort $$(mods) $(N))
 endef
 
+define OBJ =
+$(patsubst %,$(O)/%.lo,$N $(ALLN))
+endef
+
 define OBJECTS =
-$(patsubst %,$(O)/%.lo,$N $ $(ALLN)) \
+$(OBJ)\
 $(eval $(commit_objects)) 
 endef
 
@@ -81,6 +85,9 @@ define COMPILEDEP =
 	$(call STATUS,Dependency,$(or $*, $(basename $(notdir $@))))
 	$(S)$(COMPILE_PREFIX)$(LIBTOOL)compile $(CC) -MF $@ -MT "$(addsuffix .lo, $(basename $@)) $@" -MM $(CFLAGS) $<
 endef
+define SYMLINK =
+	ln -rs $(or $<,$|) $@
+endef
 
 # example:
 # N=main module
@@ -90,7 +97,7 @@ endef
 
 define AUTOMAKE_SUBPROJECT_SCRIPT =
 VPATH+=$1
-$1/$2.la: $1/Makefile
+$1/$2.la: $1/Makefile | $1
 	$$(MAKE) -C $1 $2.la
 
 $1/Makefile: $1/configure
@@ -101,7 +108,7 @@ $1/configure: $1/configure.ac
 endef
 
 # call this with the location, and the library name (libxml2, libxml2) etc
-AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT, $1, $2))
+AUTOMAKE_SUBPROJECT=$(eval $(call AUTOMAKE_SUBPROJECT_SCRIPT,$1,$2))
 
 define REQUIRE_VAR =
 ifeq ($$$1,)
